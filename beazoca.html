@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>beazoca.io</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ── CLEAN PAGE ── */
+  #clean-page {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; background: #fafaf8; font-family: 'Georgia', serif;
+    padding: 2rem;
+  }
+  .clean-line { width: 40px; height: 1px; background: #ccc; margin: 0 auto 2rem; }
+  .clean-label { font-size: 11px; color: #999; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.2rem; font-family: 'Helvetica Neue', sans-serif; }
+  .clean-title { font-size: 32px; font-weight: 400; color: #1a1a1a; margin-bottom: 0.6rem; letter-spacing: -0.02em; }
+  .clean-sub { font-size: 14px; color: #888; margin-bottom: 0; line-height: 1.8; text-align: center; font-family: 'Helvetica Neue', sans-serif; }
+  .clean-divider { width: 40px; height: 1px; background: #ccc; margin: 2rem auto; }
+  #enter-btn {
+    padding: 12px 44px; font-size: 12px; font-weight: 500; letter-spacing: 0.15em;
+    text-transform: uppercase; border: 1px solid #1a1a1a; background: transparent;
+    color: #1a1a1a; cursor: pointer; font-family: 'Helvetica Neue', sans-serif;
+    transition: background 0.2s, color 0.2s;
+  }
+  #enter-btn:hover { background: #1a1a1a; color: #fafaf8; }
+  .clean-copy { font-size: 11px; color: #ccc; margin-top: 1.5rem; font-family: 'Helvetica Neue', sans-serif; letter-spacing: 0.05em; }
+
+  /* ── CHAOS PAGE ── */
+  #chaos-page {
+    display: none; min-height: 100vh; overflow: hidden;
+    position: relative; text-align: center; padding-bottom: 30px;
+  }
+  #bg-chaos {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000080; z-index: 0;
+  }
+  #starsbox {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 1;
+  }
+  .chaos-content { position: relative; z-index: 10; }
+
+  .marquee-bar { padding: 5px 0; overflow: hidden; white-space: nowrap; }
+  .marquee-inner { display: inline-block; font-family: 'Comic Sans MS', cursive; font-weight: bold; }
+
+  #rainbow-title {
+    font-family: 'Comic Sans MS', cursive; font-size: 52px; font-weight: 900;
+    margin: 18px 0 4px; letter-spacing: 3px;
+  }
+  #rainbow-sub {
+    font-family: 'Comic Sans MS', cursive; font-size: 18px; font-weight: bold; margin-bottom: 4px;
+  }
+  #blinker {
+    font-family: 'Comic Sans MS', cursive; color: #0ff; font-size: 13px;
+    text-shadow: 2px 2px #f0f, -2px -2px #ff0;
+  }
+
+  .emoji-row { display: flex; justify-content: center; gap: 6px; margin: 14px 0; flex-wrap: wrap; }
+  .emoji-row span { font-size: 38px; display: inline-block; }
+
+  .under-construction {
+    background: repeating-linear-gradient(45deg, #ff0 0px, #ff0 12px, #000 12px, #000 24px);
+    padding: 6px 18px; font-family: 'Comic Sans MS', cursive; font-weight: bold;
+    font-size: 14px; color: #000; display: inline-block; margin: 8px auto;
+    border: 3px solid #f00;
+  }
+
+  #congrats-box {
+    border: 5px ridge #ff0; padding: 16px 24px; margin: 14px auto;
+    max-width: 380px; font-family: 'Comic Sans MS', cursive; font-size: 16px;
+    text-shadow: 1px 1px #000; color: #fff;
+  }
+
+  .btn-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 12px 0; }
+  .btn3d {
+    font-family: 'Comic Sans MS', cursive; font-size: 13px; padding: 8px 16px;
+    border: 3px outset #ccc; background: linear-gradient(180deg, #eee, #888);
+    color: #000080; font-weight: bold; cursor: pointer;
+  }
+  .btn3d:active { border-style: inset; }
+  .btn3d-yellow {
+    border-color: #ff0; background: linear-gradient(180deg, #ff0, #f80); color: #000;
+  }
+  .btn3d-green {
+    border-color: #0f0; background: linear-gradient(180deg, #0f0, #060); color: #fff;
+  }
+
+  .stats-table {
+    margin: 12px auto; border: 3px ridge #ff0;
+    font-family: 'Comic Sans MS', cursive; font-size: 13px;
+    background: #000080; color: #fff; border-collapse: collapse;
+  }
+  .stats-table th { background: #f0f; color: #000; padding: 5px 14px; }
+  .stats-table td { padding: 4px 14px; border-top: 1px solid #333; }
+
+  .visitor-box { margin: 10px 0; }
+  .visitor-label { font-family: 'Comic Sans MS', cursive; color: #ff0; font-size: 12px; }
+  #counter {
+    font-family: 'Courier New', monospace; background: #000; color: #0f0;
+    border: 2px solid #0f0; padding: 4px 14px; font-size: 15px; display: inline-block;
+  }
+
+  .small-text { font-family: 'Comic Sans MS', cursive; font-size: 10px; margin: 3px 0; }
+
+  /* ── MATRIX OVERLAY ── */
+  #matrix-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 9999; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  #matrix-canvas { position: absolute; top: 0; left: 0; }
+  .matrix-content {
+    position: relative; z-index: 10; font-family: 'Courier New', monospace;
+    color: #0f0; font-size: 15px; text-align: center; line-height: 2;
+  }
+  .matrix-title { font-size: 26px; font-weight: bold; margin-bottom: 16px; }
+  #exit-matrix-btn {
+    font-family: 'Courier New', monospace; background: #000; color: #0f0;
+    border: 1px solid #0f0; padding: 10px 24px; cursor: pointer; font-size: 13px;
+    margin-top: 16px;
+  }
+  #exit-matrix-btn:hover { background: #0f0; color: #000; }
+</style>
+</head>
+<body>
+
+<!-- CLEAN PAGE -->
+<div id="clean-page">
+  <div class="clean-line"></div>
+  <p class="clean-label">beazoca · 2025</p>
+  <h1 class="clean-title">A journey well earned.</h1>
+  <p class="clean-sub">BSc Computer Engineering<br>Class of 2025</p>
+  <div class="clean-divider"></div>
+  <button id="enter-btn">Enter</button>
+  <p class="clean-copy">© beazoca industries 2025</p>
+</div>
+
+<!-- CHAOS PAGE -->
+<div id="chaos-page">
+  <div id="bg-chaos"></div>
+  <div id="starsbox"></div>
+
+  <div class="chaos-content">
+
+    <div class="marquee-bar" style="background:#ff0;">
+      <span id="mq1" class="marquee-inner" style="font-size:13px;color:#f00;">
+        ★ PARABÉNS BEAZOCA ★ ENGENHEIRA INFORMÁTICA ★ LICENCIADA ★ A MELHOR DO MUNDO ★ SOMOS TÃO ORGULHOSOS ★ PARABÉNS BEAZOCA ★ ENGENHEIRA INFORMÁTICA ★ LICENCIADA ★ A MELHOR DO MUNDO ★ SOMOS TÃO ORGULHOSOS ★&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>
+    </div>
+
+    <div class="marquee-bar" style="background:#f0f;">
+      <span id="mq3" class="marquee-inner" style="font-size:11px;color:#ff0;">
+        💾 DOWNLOAD COMPLETE: beazoca.exe 💾 FILE SIZE: INFINITE TALENT 💾 NO BUGS FOUND 💾 EXCEPT IN PRODUCTION 💾 DOWNLOAD COMPLETE: beazoca.exe 💾 FILE SIZE: INFINITE TALENT 💾 NO BUGS FOUND 💾 EXCEPT IN PRODUCTION 💾&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>
+    </div>
+
+    <div id="rainbow-title">BEAZOCA</div>
+    <div id="rainbow-sub">~*~ ENGENHEIRA INFORMÁTICA ~*~</div>
+    <div id="blinker">★ LICENCIADA COM MUITO ESFORÇO E AMOR ★</div>
+
+    <div class="emoji-row">
+      <span id="e1">🎓</span><span id="e2">⭐</span><span id="e3">💻</span>
+      <span id="e4">🎉</span><span id="e5">🌈</span><span id="e6">💾</span>
+      <span id="e7">🔥</span><span id="e8">👑</span>
+    </div>
+
+    <div class="under-construction">🚧 UNDER CONSTRUCTION — GENIUS AT WORK 🚧</div>
+
+    <div id="congrats-box">
+      🎊 PARABÉNS OFICIALMENTE!! 🎊<br><br>
+      Conseguiste!!! Era mesmo tu!!<br>
+      Engenheira Informática CERTIFICADA 💾<br><br>
+      <span id="hearts" style="font-size:22px;">❤️❤️❤️❤️❤️</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn3d" onclick="alert('PARABÉNS BEAZOCA!!\n\nEngenheira Informática!!\nOrgulho máximo!! 🎉🎉🎉')">Clica aqui!!</button>
+      <button class="btn3d" onclick="alert('Disseste para não clicar!!\nMas já que clicaste:\nPARABÉNS MESMO ASSIM!! 💻🎓')">Não cliques!!</button>
+      <button class="btn3d btn3d-yellow" onclick="doConfetti()">FESTA MÁXIMA!! 🎉</button>
+      <button class="btn3d btn3d-green" onclick="doMatrix()">MODO HACKER 💻</button>
+    </div>
+
+    <table class="stats-table">
+      <tr><th>STAT</th><th>VALOR</th></tr>
+      <tr><td>Nível</td><td style="color:#ff0;">ENGENHEIRA ★★★★★</td></tr>
+      <tr><td>HP</td><td style="color:#0f0;">∞ / ∞</td></tr>
+      <tr><td>Bugs corrigidos</td><td style="color:#0ff;">9999+</td></tr>
+      <tr><td>Noites sem dormir</td><td style="color:#f80;">MUITAS</td></tr>
+      <tr><td>Orgulho</td><td style="color:#f0f;">MÁXIMO</td></tr>
+    </table>
+
+    <div class="visitor-box">
+      <div class="visitor-label">visitas desde sempre:</div>
+      <div id="counter">0000001</div>
+    </div>
+
+    <p class="small-text" style="color:#0ff;">best viewed in internet explorer 6.0 at 800x600 · netscape navigator also ok</p>
+    <p class="small-text" style="color:#f80;">made with ❤️ and notepad.exe</p>
+
+    <div class="marquee-bar" style="background:#000;border-top:2px solid #f0f;margin-top:12px;">
+      <span id="mq2" class="marquee-inner" style="font-size:11px;color:#0ff;">
+        💾 Esta página foi feita com muito amor 💾 e zero bom gosto 💾 tal como pedido 💾 Esta página foi feita com muito amor 💾 e zero bom gosto 💾 tal como pedido 💾&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>
+    </div>
+
+  </div>
+</div>
+
+<!-- MATRIX OVERLAY -->
+<div id="matrix-overlay">
+  <canvas id="matrix-canvas"></canvas>
+  <div class="matrix-content">
+    <div class="matrix-title">ACCESS GRANTED</div>
+    <div>user: beazoca</div>
+    <div>role: engenheira_informatica</div>
+    <div>status: LICENCIADA ✓</div>
+    <div>clearance: MÁXIMA</div>
+    <button id="exit-matrix-btn" onclick="closeMatrix()">[ EXIT MATRIX ]</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('enter-btn').addEventListener('click', function() {
+  document.getElementById('clean-page').style.display = 'none';
+  document.getElementById('chaos-page').style.display = 'block';
+  makeStars();
+  animateCounter();
+  animateMarquees();
+  animateEmojis();
+  animateRainbow();
+  animateBlink();
+  animateBg();
+  animateHearts();
+  animateCongrats();
+});
+
+function makeStars() {
+  var box = document.getElementById('starsbox');
+  var symbols = ['★','✦','✧','·','✺','*','☆'];
+  for (var i = 0; i < 40; i++) {
+    (function() {
+      var star = document.createElement('div');
+      star.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      var size = 10 + Math.floor(Math.random() * 16);
+      star.style.cssText = 'position:absolute;font-size:' + size + 'px;left:' + (Math.random()*98) + '%;top:' + (Math.random()*98) + '%;color:#ff0;';
+      box.appendChild(star);
+      var vis = true;
+      setInterval(function() { star.style.opacity = (vis = !vis) ? '1' : '0.1'; }, 300 + Math.random() * 900);
+    })();
+  }
+}
+
+function animateCounter() {
+  var el = document.getElementById('counter');
+  var n = 1;
+  var iv = setInterval(function() {
+    n += Math.floor(Math.random() * 23) + 1;
+    if (n > 9999999) { n = 9999999; clearInterval(iv); }
+    el.textContent = String(n).padStart(7, '0');
+  }, 60);
+}
+
+function animateMarquees() {
+  [['mq1', 1.8], ['mq2', 1.2], ['mq3', 1.4]].forEach(function(pair) {
+    var el = document.getElementById(pair[0]);
+    var speed = pair[1];
+    var p = 0;
+    setInterval(function() {
+      p -= speed;
+      if (p < -el.scrollWidth) p = window.innerWidth;
+      el.style.transform = 'translateX(' + p + 'px)';
+    }, 16);
+  });
+}
+
+function animateEmojis() {
+  ['e1','e2','e3','e4','e5','e6','e7','e8'].forEach(function(id, i) {
+    var el = document.getElementById(id);
+    var angle = 0;
+    var speed = (0.8 + Math.random() * 1.2) * (i % 2 === 0 ? 1 : -1);
+    var bounce = 0;
+    setInterval(function() {
+      angle += speed * 4;
+      bounce += 0.1;
+      el.style.transform = 'rotate(' + angle + 'deg) translateY(' + (Math.sin(bounce) * 8) + 'px)';
+    }, 30);
+  });
+}
+
+var hue = 0;
+function animateRainbow() {
+  var t = document.getElementById('rainbow-title');
+  var s = document.getElementById('rainbow-sub');
+  setInterval(function() {
+    hue = (hue + 4) % 360;
+    t.style.color = 'hsl(' + hue + ',100%,60%)';
+    t.style.textShadow = '3px 3px hsl(' + ((hue+120)%360) + ',100%,50%),-3px -3px hsl(' + ((hue+240)%360) + ',100%,50%)';
+    s.style.color = 'hsl(' + ((hue+60)%360) + ',100%,70%)';
+  }, 30);
+}
+
+function animateBlink() {
+  var el = document.getElementById('blinker');
+  setInterval(function() { el.style.visibility = el.style.visibility === 'hidden' ? 'visible' : 'hidden'; }, 500);
+}
+
+var bgHue = 0;
+function animateBg() {
+  var bg = document.getElementById('bg-chaos');
+  setInterval(function() {
+    bgHue = (bgHue + 0.5) % 360;
+    bg.style.background = 'linear-gradient(135deg, hsl(' + bgHue + ',80%,15%), hsl(' + ((bgHue+60)%360) + ',80%,10%))';
+  }, 50);
+}
+
+var heartList = ['❤️','💜','💙','💚','💛','🧡'];
+var heartIdx = 0;
+function animateHearts() {
+  var el = document.getElementById('hearts');
+  setInterval(function() {
+    heartIdx = (heartIdx + 1) % heartList.length;
+    el.textContent = heartList.map(function(_, j) { return heartList[(heartIdx + j) % heartList.length]; }).slice(0, 5).join('');
+  }, 300);
+}
+
+var congrHue = 0;
+function animateCongrats() {
+  var box = document.getElementById('congrats-box');
+  setInterval(function() {
+    congrHue = (congrHue + 3) % 360;
+    box.style.background = 'hsl(' + congrHue + ',80%,20%)';
+  }, 40);
+}
+
+function doConfetti() {
+  var chaos = document.getElementById('chaos-page');
+  var items = ['🎉','⭐','🌈','💻','🎓','💾','✨','🔥','👑','🎊','💜','🏆'];
+  for (var i = 0; i < 60; i++) {
+    (function() {
+      var c = document.createElement('div');
+      c.textContent = items[Math.floor(Math.random() * items.length)];
+      c.style.cssText = 'position:fixed;font-size:' + (16 + Math.floor(Math.random()*20)) + 'px;left:' + (Math.random()*100) + '%;top:' + (Math.random()*100) + '%;z-index:999;pointer-events:none;transition:all 0.8s;';
+      document.body.appendChild(c);
+      setTimeout(function() { c.style.opacity = '0'; c.style.transform = 'scale(2) translateY(-40px)'; }, 100);
+      setTimeout(function() { c.remove(); }, 1000);
+    })();
+  }
+}
+
+var matrixInterval = null;
+function doMatrix() {
+  var overlay = document.getElementById('matrix-overlay');
+  overlay.style.display = 'flex';
+  var canvas = document.getElementById('matrix-canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var ctx = canvas.getContext('2d');
+  var cols = Math.floor(canvas.width / 16);
+  var drops = [];
+  for (var i = 0; i < cols; i++) drops[i] = Math.random() * canvas.height / 16;
+  var chars = 'beazoca01ENGENHEIRA{}[]<>function()return;import*from01beazoca'.split('');
+  matrixInterval = setInterval(function() {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0f0';
+    ctx.font = '14px monospace';
+    for (var i = 0; i < drops.length; i++) {
+      ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 16, drops[i] * 16);
+      if (drops[i] * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }, 33);
+}
+
+function closeMatrix() {
+  document.getElementById('matrix-overlay').style.display = 'none';
+  if (matrixInterval) { clearInterval(matrixInterval); matrixInterval = null; }
+}
+</script>
+</body>
+</html>
